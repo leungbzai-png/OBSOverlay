@@ -1,0 +1,40 @@
+# ---- Local config & secrets (NEVER commit) ----
+config.json
+.env
+*.local.json
+*.local.ini
+secrets.*
+credentials.*
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# ---- Build / packaging artifacts ----
+build/
+dist/
+*.spec
+
+# ---- Release artifacts (kept in E:\Backup\Releases\OBSOverlay) ----
+*.zip
+*.exe
+release/*.zip
+release/*.exe
+
+# ---- Logs / temp / cache ----
+logs/
+temp/
+tmp/
+cache/
+*.log
+
+# ---- Editor / OS ----
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.local

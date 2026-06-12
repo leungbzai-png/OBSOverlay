@@ -1,7 +1,9 @@
 {
+  "language": "zh",
   "obs_websocket": {
     "host": "127.0.0.1",
     "port": 4455,
     "password": "CHANGE_ME"
-  }
+  },
+  "obs_path": ""
 }

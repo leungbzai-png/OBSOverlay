@@ -25,11 +25,15 @@ dist/
 release/*.zip
 release/*.exe
 
-# ---- Logs / temp / cache ----
-logs/
+# ---- Logs / temp / cache (keep the empty dirs, ignore their contents) ----
+logs/*
+!logs/.gitkeep
 temp/
 tmp/
-cache/
+cache/*
+!cache/.gitkeep
+data/*
+!data/.gitkeep
 *.log
 
 # ---- Editor / OS ----

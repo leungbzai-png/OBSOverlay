@@ -18,13 +18,29 @@
 
 ## 当前版本
 
-`v0.1.0` —— 已开源发布到 GitHub（<https://github.com/leungbzai-png/OBSOverlay>），GitHub Release 尚未创建。
+`v0.2.0 — Final Portable Edition` —— 已开源发布到 GitHub（<https://github.com/leungbzai-png/OBSOverlay>）。
 
-## v0.1.0 已实现功能（不要再当成待办）
+## v0.2.0 已实现功能（不要再当成待办）
 
-状态悬浮提示（不进画面）、OBS WebSocket 联动与配置化、系统托盘常驻 + 托盘图标、
-开机自启管理、OBS 自启管理、安全清理回归、依赖安装脚本、`config.example.json` 模板
-（真实 `config.json` 不提交）。详见 README / `docs/CHANGELOG.md`。未来增强方向见 `docs/ROADMAP.md`。
+Portable `OBSOverlay.exe`（PyInstaller，数据跟随 exe 目录）、首次启动设置窗口、
+中文 / English 选择、GUI 填写 OBS WebSocket、GUI 管理 OBSOverlay / OBS 开机自启、
+托盘菜单（设置 / 测试连接 / 重连 / 打开目录 / 打开配置 / 退出）、`build_portable.bat` 打包脚本。
+加上 v0.1.0 的状态悬浮提示（不进画面）、WebSocket 联动与自动重连、托盘常驻、`.bat` 工具。
+详见 README / `docs/CHANGELOG.md`。
+
+## 维护态项目（重要）
+
+v0.2.0 是**最终实用版本**，后续只做维护：修 bug、适配未来 OBS WebSocket 变化、
+必要时更新依赖 / 优化打包。**不要**引入 PyQt / Electron / Wails、自动更新、多主题、多场景、
+复杂日志页面，也**不要**大规模重构。见 `docs/ROADMAP.md`。
+
+## 关键实现要点
+
+- 主程序单文件 `src/obs_overlay.pyw`，**单一 tkinter 根**（overlay.root）贯穿整个生命周期；
+  设置窗口永远是它的 `Toplevel`；托盘线程通过 `overlay.root.after(0, ...)` 回到 GUI 线程。
+- portable 路径：`IS_FROZEN` 时 `BASE_DIR = exe 目录`，否则 `= 项目根`。所有数据从 `BASE_DIR` 推导。
+- 自启用 Startup 文件夹 `.lnk`（PowerShell + `CREATE_NO_WINDOW`，绝不闪控制台）。
+- 密码绝不进日志 / 异常 / 弹窗；`obsws-python` 内部 INFO 日志默认无 handler，不要给它加 INFO 文件日志。
 
 ## 核心文件
 

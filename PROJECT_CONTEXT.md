@@ -29,23 +29,33 @@ OBSOverlay
 
 ## 当前版本
 
-v0.1.0
+v0.2.0 — Final Portable Edition
 
 ## 当前状态
 
-v0.1.0 已完成项目化、去敏、文档化，并已开源发布到 GitHub
-（<https://github.com/leungbzai-png/OBSOverlay>）。GitHub Release 尚未创建。
+v0.2.0 是面向普通用户的最终实用 portable 版本：免装 Python 的 `OBSOverlay.exe`，
+首次启动设置窗口、中英文选择、GUI 填写 WebSocket、GUI 管理 OBSOverlay / OBS 开机自启、
+托盘菜单管理，配置 / 日志 / 缓存 / 数据全部跟随 exe 目录。已开源发布到 GitHub
+（<https://github.com/leungbzai-png/OBSOverlay>）。
 
-## v0.1.0 已实现功能
+## v0.2.0 已实现功能
+
+- Portable `OBSOverlay.exe`（PyInstaller，windowed 无控制台），数据跟随 exe 目录。
+- 首次启动设置窗口（无 `config.json` 或密码仍为 `CHANGE_ME` 时弹出）。
+- 中文 / English 语言选择，保存到 `config.json`，可按系统语言自动判断。
+- GUI 填写 OBS WebSocket host / port / password（密码隐藏，不进日志）。
+- GUI 管理 OBSOverlay 开机自启（Startup `OBSOverlay.lnk`）。
+- GUI 管理 OBS 开机自启（Startup `OBS Studio.lnk`，支持自动检测 / 浏览 `obs64.exe`）。
+- 托盘菜单：打开设置 / 测试连接 / 重新连接 / 打开程序目录 / 打开配置文件 / 退出。
+- `scripts/build_portable.bat` 打包脚本，生成 portable zip + source zip。
+
+## v0.1.0 已实现功能（沿用至今）
 
 - OBS 录屏状态悬浮提示（开始 / 停止 / 暂停 / 继续，`WDA_EXCLUDEFROMCAPTURE` 不进画面）。
 - OBS WebSocket 联动，断线自动重连。
-- 从 `config.json` 读取 OBS WebSocket 配置；`config.example.json` / `config.json` 分离，真实密码不提交。
-- 缺少 `config.json` 或密码仍为 `CHANGE_ME` 时弹窗提示。
-- 系统托盘常驻 + 托盘图标 + 测试提示 / 退出菜单。
-- 开机自启安装 / 取消脚本；OBS 开机自启安装 / 取消脚本。
-- 安全清理回归脚本；依赖安装脚本；普通用户双击 `.bat` 即可使用。
-- GitHub 开源项目结构 + 本地 source release。
+- 从 `config.json` 读取配置；`config.example.json` / `config.json` 分离，真实密码不提交。
+- 系统托盘常驻 + 托盘图标。
+- 自启 / 清理 / 依赖 `.bat` 脚本（v0.2.0 起定位为高级用户 / 故障恢复工具）。
 
 ## 已完成的整理过程
 
@@ -56,7 +66,8 @@ v0.1.0 已完成项目化、去敏、文档化，并已开源发布到 GitHub
 
 ## 后续迭代计划
 
-见 `docs/ROADMAP.md`：UI 美化、配置项扩展、全局快捷键、多场景提示、打包 exe、托盘增强、日志等。
+见 `docs/ROADMAP.md`：v0.2.0 已是最终实用版本，后续只做维护（修 bug、适配 OBS WebSocket 变化、
+必要时更新依赖 / 优化打包），不计划引入大型功能或框架。
 
 ## 开发前必须阅读的文档
 

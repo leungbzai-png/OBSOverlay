@@ -1,12 +1,15 @@
 # OBSOverlay
 
-> 轻量级 Windows OBS 录屏提示 / 状态悬浮小工具
+> 轻量级 Windows OBS 录屏提示 / 状态悬浮小工具（v0.2.0 Final Portable Edition）
 > A lightweight Windows overlay that shows OBS recording status while you record or stream.
 
-OBSOverlay 是一个轻量级 Windows OBS 录屏状态悬浮工具，支持 OBS WebSocket 联动、
-系统托盘常驻、开机自启、OBS 自启管理与安全配置文件。它在屏幕右上角显示一个
-**录制不进画面**（capture-excluded）的小浮窗，当 OBS 开始 / 停止 / 暂停 / 继续录制时
-闪一下状态提示，并常驻系统托盘。它通过 **OBS WebSocket** 与 OBS Studio 通信。
+OBSOverlay 在屏幕右上角显示一个**录制不进画面**（capture-excluded）的小浮窗，当 OBS
+开始 / 停止 / 暂停 / 继续录制时闪一下状态提示，并常驻系统托盘。它通过 **OBS WebSocket**
+与 OBS Studio 通信。
+
+**v0.2.0** 是最终实用 **portable 版本**：解压即用，普通用户不再需要手动编辑 `config.json`，
+也不需要手动运行 `.bat`。首次启动会弹出设置窗口，让你选择语言、填写 OBS WebSocket、
+并按需开启开机自启。
 
 ---
 
@@ -16,111 +19,108 @@ OBSOverlay 是一个轻量级 Windows OBS 录屏状态悬浮工具，支持 OBS 
 - 直播 / 教学录制时，给自己一个明显的开始 / 暂停 / 停止状态反馈。
 - 希望开机自动启动 OBS 和提示工具，少点几步操作。
 
-## 功能列表（v0.1.0 已支持）
+## 快速开始（推荐：portable 版）
 
-- **状态悬浮提示**：右上角浮窗显示录制状态（开始 / 停止 / 暂停 / 继续）。
-- **录制不进画面**：使用 `WDA_EXCLUDEFROMCAPTURE`，浮窗**不会被录进视频**。
-- **OBS WebSocket 联动**：监听 OBS 录制事件，断线自动重连。
-- **OBS WebSocket 配置化**：从本地 `config.json` 读取 host / port / password。
-- **系统托盘常驻**：带托盘图标，可手动「测试提示」和「退出」。
-- **开机自启管理**：一键安装 / 取消提示工具的开机自启。
-- **OBS 自启管理**：一键安装 / 取消 OBS Studio 的开机自启。
-- **安全清理回归**：一键脚本只清理本项目自身内容，逐步确认。
-- **`config.example.json` 模板**：配置与代码分离，**真实 `config.json` 不提交**。
-- **缺配置友好提示**：缺少 `config.json` 或密码仍为 `CHANGE_ME` 时弹窗提示，不静默失败。
+1. 下载 `OBSOverlay-v0.2.0-portable.zip` 并**解压到任意目录**（建议放在你有写权限的文件夹）。
+2. 双击 **`OBSOverlay.exe`**。
+3. 首次启动会弹出**设置窗口**：
+   - **选择语言**：中文 / English。
+   - **填写 OBS WebSocket**：Host（默认 `127.0.0.1`）、Port（默认 `4455`）、Password。
+   - 可选 **勾选开机自启**（OBSOverlay 和 / 或 OBS）。
+   - 点 **测试连接** 验证，再点 **保存并启动**。
+4. 托盘出现深色小圆点图标，开始录制时右上角会闪红色「● REC 开始录制」。
 
-## 快速开始
+> 配置、日志、缓存、数据都保存在 **`OBSOverlay.exe` 所在目录**（`config.json` / `logs/` /
+> `cache/` / `data/`）。把整个文件夹搬到别处仍可用。`config.json` 只留在本机，**不会上传、不进 Git**。
 
-1. 安装 [Python 3](https://www.python.org/)（勾选 *Add Python to PATH*）。
-2. 安装依赖：双击 `scripts\install_deps.bat`（或 `python -m pip install -r requirements.txt`）。
-3. 复制 `config.example.json` 为 `config.json`，填写你自己的 OBS WebSocket 密码。
-4. 在 OBS 里启用 WebSocket（见下）。
-5. 运行 `src\obs_overlay.pyw`（双击即可），托盘会出现深色小图标。
-
-## 配置 OBS WebSocket
+## 在 OBS 里启用 WebSocket
 
 在 OBS Studio 中：**工具(Tools) → WebSocket 服务器设置(WebSocket Server Settings)**
 
 - 勾选 *Enable WebSocket server*。
 - 默认端口 `4455`。
-- 点击 *Show Connect Info* 查看 / 设置密码。
+- 点击 *Show Connect Info* 查看 / 设置密码，填进 OBSOverlay 设置窗口。
 
-## config.example.json / config.json 说明
+## 托盘菜单
 
-仓库只包含**模板** `config.example.json`：
+右键托盘图标：
+
+- **打开设置 / Open settings** — 重新打开设置窗口。
+- **测试连接 / Test connection** — 测试当前配置能否连上 OBS。
+- **重新连接 OBS / Reconnect OBS** — 用最新配置重连。
+- **打开程序目录 / Open folder** — 打开 exe 所在目录。
+- **打开配置文件 / Open config** — 打开 `config.json`。
+- **退出 / Exit**。
+
+## 设置窗口字段
+
+- 语言 / Language：中文 / English
+- OBS WebSocket Host / Port / Password（密码隐藏输入）
+- 开机自动启动 OBSOverlay / Start OBSOverlay with Windows
+- 开机自动启动 OBS / Start OBS with Windows
+- OBS 程序路径（`obs64.exe`）+ **自动检测** / **浏览…** 按钮
+- 按钮：**测试连接** / **保存并启动** / **取消**
+
+自启通过 Windows **Startup 文件夹快捷方式**实现：勾选创建 `OBSOverlay.lnk` /
+`OBS Studio.lnk`，取消时只删除本项目创建的对应快捷方式，不动你的其它启动项。
+
+## 高级用户 / 故障恢复
+
+`scripts/` 下的 `.bat` 脚本是给高级用户和故障恢复用的，普通用户**不需要**：
+
+| 脚本 | 作用 |
+|------|------|
+| `build_portable.bat` | 构建 `OBSOverlay.exe` 与 portable / source zip |
+| `install_deps.bat` | 安装 Python 运行依赖（源码运行时用） |
+| `install_startup.bat` / `uninstall_startup.bat` | 命令行方式管理 OBSOverlay 自启 |
+| `install_obs_startup.bat` / `uninstall_obs_startup.bat` | 命令行方式管理 OBS 自启 |
+| `reset_clean.bat` | 安全清理本项目自身内容（自启项 / 缓存 / 可选 config.json） |
+
+从源码运行（开发者）：见 [`docs/DEV_GUIDE.md`](docs/DEV_GUIDE.md)。
+
+## config.example.json
+
+仓库只包含**模板** `config.example.json`（普通用户无需手动复制，设置窗口会自动生成 `config.json`）：
 
 ```json
 {
+  "language": "zh",
   "obs_websocket": {
     "host": "127.0.0.1",
     "port": 4455,
     "password": "CHANGE_ME"
-  }
+  },
+  "obs_path": ""
 }
 ```
 
-使用前：
-
-1. 复制 `config.example.json` → `config.json`。
-2. 把 `password` 从 `CHANGE_ME` 改成你 OBS 里的真实 WebSocket 密码。
-
-`config.json` 已在 `.gitignore` 中，**不会被提交**，你的密码只留在本机。
-若未创建 `config.json` 或密码仍是 `CHANGE_ME`，程序会弹窗提示，不会静默失败。
-
-## 安装依赖
-
-```bat
-python -m pip install -r requirements.txt
-```
-
-依赖：`obsws-python`、`pystray`、`pillow`（`tkinter` / `ctypes` 为 Python 标准库）。
-
-## 启动方式
-
-- 双击 `src\obs_overlay.pyw`（由 `pythonw.exe` 运行，无控制台窗口）。
-- 或命令行：`pythonw src\obs_overlay.pyw`。
-
-## 开机自启
-
-- 安装：`scripts\install_startup.bat`（创建 Startup 快捷方式 `OBS Overlay.lnk`，会先让你确认）。
-- 取消：`scripts\uninstall_startup.bat`（只删除本项目创建的该快捷方式）。
-
-## OBS 开机自启
-
-- 安装：`scripts\install_obs_startup.bat`
-  - 自动检测常见 OBS 安装路径，找不到时让你手动输入 `obs64.exe` 路径。
-  - 写入前显示自启项名称和目标路径并要求确认。
-- 取消：`scripts\uninstall_obs_startup.bat`（只删除本项目创建的 `OBS Studio.lnk`）。
+`config.json` 已在 `.gitignore` 中，**不会被提交**，也不放进任何发布 zip。
 
 ## 目录结构
 
 ```
 OBSOverlay/
-├─ src/
-│  └─ obs_overlay.pyw        # 主程序（从 config.json 读取配置）
+├─ src/obs_overlay.pyw       # 主程序（portable 路径 + 设置窗口 + 托盘 + OBS WebSocket）
 ├─ scripts/
+│  ├─ build_portable.bat     # 打包 exe + portable / source zip
 │  ├─ install_deps.bat
-│  ├─ install_startup.bat
-│  ├─ uninstall_startup.bat
-│  ├─ install_obs_startup.bat
-│  ├─ uninstall_obs_startup.bat
+│  ├─ install_startup.bat / uninstall_startup.bat
+│  ├─ install_obs_startup.bat / uninstall_obs_startup.bat
 │  └─ reset_clean.bat        # 安全清理回归
 ├─ docs/                     # 用户 / 开发 / 发布 / 路线图等文档
-├─ release/README.md         # 发布说明（产物本身不入库）
-├─ config.example.json       # 配置模板（占位符）
+├─ logs/ cache/ data/        # 运行时数据（跟随 exe；内容不入库）
+├─ release/README.md
+├─ config.example.json
 ├─ requirements.txt
-├─ .gitignore
-├─ LICENSE
-├─ README.md
-└─ PROJECT_CONTEXT.md
+├─ .gitignore / LICENSE / README.md / PROJECT_CONTEXT.md
 ```
 
 ## 安全注意事项
 
 - **绝不**把真实 OBS WebSocket 密码 / token 写进源码、文档或提交历史。
-- 真实配置只放在本地 `config.json`（已被 `.gitignore` 忽略）。
-- 发布 / 提交前请按 `docs/RELEASE_GUIDE.md` 再次检查敏感关键词。
-- 清理请使用 `scripts\reset_clean.bat`，它只处理本项目自身的内容。
+- 真实配置只放在本地 `config.json`（已被 `.gitignore` 忽略，且不进任何 zip）。
+- 程序在日志 / 异常 / 错误弹窗中**不会**输出密码。
+- 发布 / 提交前请按 [`docs/RELEASE_GUIDE.md`](docs/RELEASE_GUIDE.md) 再次检查敏感关键词。
 
 ## License
 

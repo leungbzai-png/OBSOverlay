@@ -7,15 +7,15 @@ REM  - Assembles a portable folder and zips it
 REM  - Builds a source zip via "git archive HEAD"
 REM
 REM  Output goes OUTSIDE the repo, to:
-REM    E:\Backup\Releases\OBSOverlay\v0.2.0\
-REM  Run the SOURCE-zip step AFTER committing so it captures v0.2.0 code.
+REM    E:\Backup\Releases\OBSOverlay\%VER%\   (VER set below)
+REM  Run the SOURCE-zip step AFTER committing so it captures the tagged code.
 REM ============================================================
 setlocal
 cd /d "%~dp0.."
 echo Project dir: %CD%
 echo.
 
-set VER=v0.2.0
+set VER=v0.2.1
 set RELROOT=E:\Backup\Releases\OBSOverlay\%VER%
 set PORTNAME=OBSOverlay-%VER%-portable
 set PORTDIR=%RELROOT%\%PORTNAME%

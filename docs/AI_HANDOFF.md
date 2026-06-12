@@ -18,7 +18,9 @@
 
 ## 当前版本
 
-`v0.2.0 — Final Portable Edition` —— 已开源发布到 GitHub（<https://github.com/leungbzai-png/OBSOverlay>）。
+`v0.2.1 — Final Portable Edition (Hotfix)` —— 已开源发布到 GitHub（<https://github.com/leungbzai-png/OBSOverlay>）。
+v0.2.1 在 v0.2.0 之上只修两点：设置窗口最小化按钮无响应、OBS 路径自动识别（含读取已有
+Startup `OBS Studio.lnk` 目标、支持 D/E 盘常见路径）。详见 `docs/CHANGELOG.md`。
 
 ## v0.2.0 已实现功能（不要再当成待办）
 

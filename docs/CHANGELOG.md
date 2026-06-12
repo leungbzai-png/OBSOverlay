@@ -2,6 +2,31 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.1] - 2026-06-13 — Hotfix
+
+在 v0.2.0 portable 基础上的小修补丁，仅修两个问题，不改项目定位、不引入新框架、不做新功能。
+
+### Fixed
+- **设置窗口最小化按钮无响应**：设置窗口此前用 `grab_set()`（模态）+ `-topmost` 创建，
+  且作为隐藏 override-redirect 根窗口的 Toplevel，没有独立任务栏按钮 —— 模态 + 无任务栏目标
+  导致点击标题栏「最小化」无任何反应。现已移除 `grab_set()` 与 `-topmost`，并通过 Win32
+  `WS_EX_APPWINDOW` 给设置窗口一个独立任务栏按钮，最小化按钮恢复正常。
+
+### Changed
+- **增强 OBS 程序路径自动识别**：自动检测优先级改为
+  ① `config.json` 中已有且存在的 `obs_path` / `obs_exe_path`；
+  ② 现有 Startup `OBS Studio.lnk` 指向的 `obs64.exe`；
+  ③ 常见安装路径（新增 `E:\OBS`、`D:\OBS`、`E:\OBS Studio`、`D:\OBS Studio` 等）；
+  ④ 对少数常见目录做浅层固定子路径探测（**不**做全盘递归扫描）。
+- **从托盘「打开设置」可恢复已最小化窗口**：窗口存在且最小化时 `deiconify` 恢复，否则 `lift` 置前，
+  已关闭则重新打开。
+- **保存时按需识别 OBS 路径**：勾选「OBS 开机自启」但路径为空时，保存前自动识别一次，
+  成功则继续，失败才提示浏览选择 `obs64.exe`；**未勾选时路径为空不阻止保存**，也不会创建无效 `.lnk`。
+
+### Unchanged
+- 保持 v0.2.0 的 portable-first 行为：配置 / 日志 / 缓存 / 数据继续跟随 `OBSOverlay.exe` 所在目录。
+- 密码仍**绝不**写入日志 / 异常 / 弹窗；只管理本项目自己的 `OBSOverlay.lnk` / `OBS Studio.lnk`。
+
 ## [0.2.0] - 2026-06-13 — Final Portable Edition
 
 最终实用 portable 版本。普通用户解压即用，不再需要手动编辑 `config.json`，也不需要手动运行 `.bat`。

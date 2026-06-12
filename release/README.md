@@ -8,10 +8,10 @@
 E:\Backup\Releases\OBSOverlay\<version>\
 ```
 
-例如 `E:\Backup\Releases\OBSOverlay\v0.2.0\`，其中包含：
+例如 `E:\Backup\Releases\OBSOverlay\v0.2.1\`，其中包含：
 
-- `OBSOverlay-v0.2.0-portable.zip` — portable 版（含 `OBSOverlay.exe`），普通用户下载这个。
-- `OBSOverlay-v0.2.0-source.zip` — 源码包（`git archive HEAD`）。
+- `OBSOverlay-v0.2.1-portable.zip` — portable 版（含 `OBSOverlay.exe`），普通用户下载这个。
+- `OBSOverlay-v0.2.1-source.zip` — 源码包（`git archive HEAD`）。
 - `RELEASE_NOTES.md` — 发布要点。
 
 打包与发布流程见 [`../docs/RELEASE_GUIDE.md`](../docs/RELEASE_GUIDE.md)。

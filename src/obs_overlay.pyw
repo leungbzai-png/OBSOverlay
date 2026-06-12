@@ -4,7 +4,7 @@ Shows a small, capture-excluded floating banner in the top-right corner that
 reacts to OBS recording state changes (start / stop / pause / resume) via the
 OBS WebSocket API. Lives in the system tray.
 
-v0.2.0 "Final Portable Edition": runs as a portable ``OBSOverlay.exe``. All
+v0.2.x "Final Portable Edition": runs as a portable ``OBSOverlay.exe``. All
 data (``config.json``, ``logs/``, ``cache/``, ``data/``) lives next to the
 executable. On first launch (no ``config.json`` or password still ``CHANGE_ME``)
 a small tkinter settings window opens so ordinary users never edit JSON or run
@@ -65,6 +65,23 @@ OBS_LNK = STARTUP_DIR / "OBS Studio.lnk"
 OBS_CANDIDATES = [
     r"C:\Program Files\obs-studio\bin\64bit\obs64.exe",
     r"C:\Program Files (x86)\obs-studio\bin\64bit\obs64.exe",
+    r"E:\OBS\obs-studio\bin\64bit\obs64.exe",
+    r"D:\OBS\obs-studio\bin\64bit\obs64.exe",
+    r"E:\OBS Studio\bin\64bit\obs64.exe",
+    r"D:\OBS Studio\bin\64bit\obs64.exe",
+]
+
+# Directories that may hold an obs-studio install. Probed shallowly via a few
+# fixed sub-paths below — never a full-drive recursive scan.
+OBS_SEARCH_DIRS = [
+    r"C:\Program Files",
+    r"C:\Program Files (x86)",
+    r"D:\OBS",
+    r"E:\OBS",
+    r"D:\Apps",
+    r"E:\Apps",
+    r"D:\Tools",
+    r"E:\Tools",
 ]
 
 
@@ -200,7 +217,7 @@ def load_config():
         "host": str(ws.get("host", "127.0.0.1")),
         "port": int(ws.get("port", 4455)) if str(ws.get("port", 4455)).isdigit() else 4455,
         "password": str(ws.get("password", "")),
-        "obs_path": str(data.get("obs_path", "")),
+        "obs_path": str(data.get("obs_path") or data.get("obs_exe_path") or ""),
     }
 
 
@@ -226,11 +243,75 @@ def needs_setup(cfg):
     return (not pw) or pw == PLACEHOLDER_PASSWORD
 
 
-def detect_obs_path():
+def _read_shortcut_target(lnk_path):
+    """Return the TargetPath of an existing .lnk, or '' if unreadable.
+
+    Reuses the same WScript.Shell COM object used to *create* shortcuts.
+    """
+    try:
+        if not Path(lnk_path).exists():
+            return ""
+        script = (
+            "$s=(New-Object -ComObject WScript.Shell).CreateShortcut(%s);"
+            "[Console]::Out.Write($s.TargetPath)" % _ps_quote(lnk_path)
+        )
+        out = subprocess.run(
+            ["powershell", "-NoProfile", "-NonInteractive", "-Command", script],
+            creationflags=CREATE_NO_WINDOW,
+            check=False,
+            timeout=20,
+            capture_output=True,
+            text=True,
+        )
+        return (out.stdout or "").strip()
+    except Exception:
+        return ""
+
+
+def _shallow_find_obs(dirs):
+    """Probe a few fixed obs64.exe sub-paths under each dir. No recursion,
+    no full-drive scan — just a handful of os.path.isfile checks."""
+    rel_patterns = (
+        ("obs-studio", "bin", "64bit", "obs64.exe"),
+        ("bin", "64bit", "obs64.exe"),
+        ("OBS Studio", "bin", "64bit", "obs64.exe"),
+        ("OBS", "bin", "64bit", "obs64.exe"),
+    )
+    for base in dirs:
+        if not os.path.isdir(base):
+            continue
+        for rel in rel_patterns:
+            p = os.path.join(base, *rel)
+            if os.path.isfile(p):
+                return p
+    return ""
+
+
+def detect_obs_path(configured=""):
+    """Best-effort obs64.exe discovery, in priority order:
+
+    1. an explicit configured path (e.g. the value already in config.json),
+       if the file exists;
+    2. the target of an existing Startup ``OBS Studio.lnk``, if it points at a
+       real obs64.exe (the user may already auto-start OBS from a custom path);
+    3. well-known install paths (C: standard first, then E:\\OBS, D:\\OBS, …);
+    4. a shallow probe of a few likely install directories.
+
+    Never does a full-drive recursive scan. Returns '' if nothing is found.
+    """
+    if configured and os.path.isfile(configured):
+        return configured
+
+    target = _read_shortcut_target(OBS_LNK)
+    if target and os.path.basename(target).lower() == "obs64.exe" \
+            and os.path.isfile(target):
+        return target
+
     for p in OBS_CANDIDATES:
         if os.path.isfile(p):
             return p
-    return ""
+
+    return _shallow_find_obs(OBS_SEARCH_DIRS)
 
 
 # --------------------------------------------------------------------------
@@ -404,6 +485,36 @@ GetAncestor.restype = wintypes.HWND
 WDA_EXCLUDEFROMCAPTURE = 0x11
 GA_ROOT = 2
 
+GetWindowLong = user32.GetWindowLongW
+SetWindowLong = user32.SetWindowLongW
+ShowWindow = user32.ShowWindow
+GWL_EXSTYLE = -20
+WS_EX_APPWINDOW = 0x00040000
+WS_EX_TOOLWINDOW = 0x00000080
+SW_HIDE = 0
+SW_SHOW = 5
+
+
+def give_taskbar_button(win):
+    """Give a Toplevel its own taskbar button so its title-bar minimize button
+    has somewhere to go.
+
+    The settings window is owned by the hidden, override-redirect overlay root,
+    which has no taskbar entry of its own; an owned window without
+    ``WS_EX_APPWINDOW`` may refuse to minimize. Toggling the style requires the
+    window to be hidden and re-shown for the taskbar to pick it up.
+    """
+    try:
+        win.update_idletasks()
+        hwnd = GetAncestor(win.winfo_id(), GA_ROOT)
+        style = GetWindowLong(hwnd, GWL_EXSTYLE)
+        style = (style & ~WS_EX_TOOLWINDOW) | WS_EX_APPWINDOW
+        ShowWindow(hwnd, SW_HIDE)
+        SetWindowLong(hwnd, GWL_EXSTYLE, style)
+        ShowWindow(hwnd, SW_SHOW)
+    except Exception:
+        pass
+
 
 class Overlay:
     def __init__(self):
@@ -456,9 +567,18 @@ settings_win = None
 
 
 def open_settings(first_run=False):
-    """Open (or focus) the settings window. Must run on the GUI thread."""
+    """Open (or focus) the settings window. Must run on the GUI thread.
+
+    If it already exists but is minimized, restore it; if it is open, lift it to
+    the front; if it was closed, build a fresh one.
+    """
     global settings_win
     if settings_win is not None and tk.Toplevel.winfo_exists(settings_win):
+        try:
+            if settings_win.state() == "iconic":
+                settings_win.deiconify()
+        except Exception:
+            pass
         settings_win.lift()
         settings_win.focus_force()
         return
@@ -475,7 +595,7 @@ class SettingsWindow:
         self.host_var = tk.StringVar(value=cfg.get("host", "127.0.0.1"))
         self.port_var = tk.StringVar(value=str(cfg.get("port", 4455)))
         self.pw_var = tk.StringVar(value=cfg.get("password", ""))
-        obs_path = cfg.get("obs_path") or detect_obs_path()
+        obs_path = detect_obs_path(cfg.get("obs_path", ""))
         self.obs_path_var = tk.StringVar(value=obs_path)
         self.auto_overlay_var = tk.BooleanVar(value=OVERLAY_LNK.exists())
         self.auto_obs_var = tk.BooleanVar(value=OBS_LNK.exists())
@@ -483,9 +603,7 @@ class SettingsWindow:
         win = tk.Toplevel(overlay.root)
         settings_win = win
         win.resizable(False, False)
-        win.attributes("-topmost", True)
         win.protocol("WM_DELETE_WINDOW", self._on_close)
-        win.grab_set()
         self.win = win
 
         self._labels = {}
@@ -496,6 +614,12 @@ class SettingsWindow:
         w, h = win.winfo_width(), win.winfo_height()
         sw, sh = win.winfo_screenwidth(), win.winfo_screenheight()
         win.geometry(f"+{(sw - w) // 2}+{(sh - h) // 3}")
+        # Give the settings window its own taskbar button so the title-bar
+        # minimize button works (it is owned by the hidden overlay root) and is
+        # not modal, so it can be minimized like a normal window.
+        give_taskbar_button(win)
+        win.deiconify()
+        win.lift()
         win.focus_force()
 
     # -- layout -----------------------------------------------------------
@@ -590,7 +714,7 @@ class SettingsWindow:
         self._apply_language()
 
     def _on_detect(self):
-        path = detect_obs_path()
+        path = detect_obs_path(self.obs_path_var.get().strip())
         if path:
             self.obs_path_var.set(path)
         else:
@@ -635,6 +759,20 @@ class SettingsWindow:
                 return
 
         obs_path = self.obs_path_var.get().strip()
+        # If OBS auto-start is requested but we have no valid obs64.exe yet, try
+        # one auto-detect pass before bothering the user. Only prompt to browse
+        # if that still finds nothing. An unchecked box never blocks saving.
+        obs_detect_failed = False
+        if self.auto_obs_var.get() and not (obs_path and os.path.isfile(obs_path)):
+            detected = detect_obs_path(obs_path)
+            if detected:
+                obs_path = detected
+                self.obs_path_var.set(detected)
+            else:
+                obs_detect_failed = True
+                messagebox.showwarning(T[lang]["settings_title"],
+                                       T[lang]["obs_not_found"], parent=self.win)
+
         cfg = {
             "language": lang,
             "host": self.host_var.get().strip() or "127.0.0.1",
@@ -650,14 +788,14 @@ class SettingsWindow:
                                  parent=self.win)
             return
 
-        # Apply auto-start choices (only this project's shortcuts).
+        # Apply auto-start choices (only this project's shortcuts). Never create
+        # an OBS shortcut for a missing obs64.exe; the user was already warned.
         set_overlay_autostart(self.auto_overlay_var.get())
-        if self.auto_obs_var.get() and not (obs_path and os.path.isfile(obs_path)):
-            messagebox.showwarning(T[lang]["settings_title"],
-                                   T[lang]["warn_obs_path"], parent=self.win)
-            set_obs_autostart(False, obs_path)
+        want_obs = self.auto_obs_var.get() and not obs_detect_failed
+        if want_obs and obs_path and os.path.isfile(obs_path):
+            set_obs_autostart(True, obs_path)
         else:
-            set_obs_autostart(self.auto_obs_var.get(), obs_path)
+            set_obs_autostart(False, obs_path)
 
         # Apply language + (re)connect live.
         global current_lang
@@ -677,10 +815,6 @@ class SettingsWindow:
 
     def _destroy(self):
         global settings_win
-        try:
-            self.win.grab_release()
-        except Exception:
-            pass
         try:
             self.win.destroy()
         except Exception:

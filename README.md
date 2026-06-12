@@ -1,13 +1,14 @@
 # OBSOverlay
 
-> 轻量级 Windows OBS 录屏提示 / 状态悬浮小工具（v0.2.0 Final Portable Edition）
+> 轻量级 Windows OBS 录屏提示 / 状态悬浮小工具（v0.2.1 Final Portable Edition）
 > A lightweight Windows overlay that shows OBS recording status while you record or stream.
 
 OBSOverlay 在屏幕右上角显示一个**录制不进画面**（capture-excluded）的小浮窗，当 OBS
 开始 / 停止 / 暂停 / 继续录制时闪一下状态提示，并常驻系统托盘。它通过 **OBS WebSocket**
 与 OBS Studio 通信。
 
-**v0.2.0** 是最终实用 **portable 版本**：解压即用，普通用户不再需要手动编辑 `config.json`，
+**v0.2.1** 是最终实用 **portable 版本**（v0.2.0 的小修补丁：修复设置窗口最小化按钮、
+增强 OBS 路径自动识别）：解压即用，普通用户不再需要手动编辑 `config.json`，
 也不需要手动运行 `.bat`。首次启动会弹出设置窗口，让你选择语言、填写 OBS WebSocket、
 并按需开启开机自启。
 
@@ -21,7 +22,7 @@ OBSOverlay 在屏幕右上角显示一个**录制不进画面**（capture-exclud
 
 ## 快速开始（推荐：portable 版）
 
-1. 下载 `OBSOverlay-v0.2.0-portable.zip` 并**解压到任意目录**（建议放在你有写权限的文件夹）。
+1. 下载 `OBSOverlay-v0.2.1-portable.zip` 并**解压到任意目录**（建议放在你有写权限的文件夹）。
 2. 双击 **`OBSOverlay.exe`**。
 3. 首次启动会弹出**设置窗口**：
    - **选择语言**：中文 / English。

@@ -8,15 +8,15 @@
 E:\Backup\Releases\OBSOverlay\<version>\
 ```
 
-例如 `E:\Backup\Releases\OBSOverlay\v0.2.0\`。该目录**不在** Git 仓库内，也**不要**反向复制进源码仓库。
+例如 `E:\Backup\Releases\OBSOverlay\v0.2.1\`。该目录**不在** Git 仓库内，也**不要**反向复制进源码仓库。
 
-## 一次发布包含什么（v0.2.0）
+## 一次发布包含什么（v0.2.1）
 
-`v0.2.0\` 目录：
+`v0.2.1\` 目录：
 
-- `OBSOverlay-v0.2.0-portable\` — 组装好的 portable 目录。
-- `OBSOverlay-v0.2.0-portable.zip` — portable 版（含 `OBSOverlay.exe`）。**普通用户下载这个。**
-- `OBSOverlay-v0.2.0-source.zip` — 源码包（`git archive HEAD`，仅 Git 跟踪文件）。
+- `OBSOverlay-v0.2.1-portable\` — 组装好的 portable 目录。
+- `OBSOverlay-v0.2.1-portable.zip` — portable 版（含 `OBSOverlay.exe`）。**普通用户下载这个。**
+- `OBSOverlay-v0.2.1-source.zip` — 源码包（`git archive HEAD`，仅 Git 跟踪文件）。
 - `RELEASE_NOTES.md` — 本次发布要点（`gh release create --notes-file` 读取）。
 
 ## 打包
@@ -26,7 +26,7 @@ scripts\build_portable.bat
 ```
 
 构建 `OBSOverlay.exe`（`--onefile --windowed`，无控制台）、组装 portable 目录、生成两个 zip。
-**source zip 用 `git archive HEAD`，必须在提交 v0.2.0 之后再生成 / 重生成**，否则只含旧代码。
+**source zip 用 `git archive HEAD`，必须在提交 v0.2.1 之后再生成 / 重生成**，否则只含旧代码。
 
 ## portable / source zip 必须排除
 
@@ -61,8 +61,8 @@ Get-ChildItem -Recurse -File |
 
 ```powershell
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-foreach ($z in 'OBSOverlay-v0.2.0-portable.zip','OBSOverlay-v0.2.0-source.zip') {
-  [IO.Compression.ZipFile]::OpenRead("E:\Backup\Releases\OBSOverlay\v0.2.0\$z").Entries.FullName
+foreach ($z in 'OBSOverlay-v0.2.1-portable.zip','OBSOverlay-v0.2.1-source.zip') {
+  [IO.Compression.ZipFile]::OpenRead("E:\Backup\Releases\OBSOverlay\v0.2.1\$z").Entries.FullName
 }
 ```
 
@@ -75,11 +75,11 @@ foreach ($z in 'OBSOverlay-v0.2.0-portable.zip','OBSOverlay-v0.2.0-source.zip') 
 确认无敏感信息后：
 
 ```powershell
-gh release create v0.2.0 ^
-  "E:\Backup\Releases\OBSOverlay\v0.2.0\OBSOverlay-v0.2.0-portable.zip" ^
-  "E:\Backup\Releases\OBSOverlay\v0.2.0\OBSOverlay-v0.2.0-source.zip" ^
-  --title "OBSOverlay v0.2.0 Final Portable Edition" ^
-  --notes-file "E:\Backup\Releases\OBSOverlay\v0.2.0\RELEASE_NOTES.md"
+gh release create v0.2.1 ^
+  "E:\Backup\Releases\OBSOverlay\v0.2.1\OBSOverlay-v0.2.1-portable.zip" ^
+  "E:\Backup\Releases\OBSOverlay\v0.2.1\OBSOverlay-v0.2.1-source.zip" ^
+  --title "OBSOverlay v0.2.1 Hotfix" ^
+  --notes-file "E:\Backup\Releases\OBSOverlay\v0.2.1\RELEASE_NOTES.md"
 ```
 
 > **发布是不可逆的对外动作**，发布前务必再核对一次。若该 tag 的 Release 已存在，不要重复创建。

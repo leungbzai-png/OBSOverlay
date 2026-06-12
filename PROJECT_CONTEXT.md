@@ -29,11 +29,13 @@ OBSOverlay
 
 ## 当前版本
 
-v0.2.0 — Final Portable Edition
+v0.2.1 — Final Portable Edition (Hotfix)
 
 ## 当前状态
 
-v0.2.0 是面向普通用户的最终实用 portable 版本：免装 Python 的 `OBSOverlay.exe`，
+v0.2.1 是 v0.2.0 之上的小修补丁：修复设置窗口最小化按钮无响应（移除 `grab_set`/`-topmost`，
+通过 `WS_EX_APPWINDOW` 给设置窗口独立任务栏按钮），并增强 OBS 路径自动识别（读取已有
+Startup `OBS Studio.lnk` 目标、支持 D/E 盘常见安装路径）。其余沿用 v0.2.0：免装 Python 的 `OBSOverlay.exe`，
 首次启动设置窗口、中英文选择、GUI 填写 WebSocket、GUI 管理 OBSOverlay / OBS 开机自启、
 托盘菜单管理，配置 / 日志 / 缓存 / 数据全部跟随 exe 目录。已开源发布到 GitHub
 （<https://github.com/leungbzai-png/OBSOverlay>）。

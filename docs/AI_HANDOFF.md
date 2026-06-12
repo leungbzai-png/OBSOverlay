@@ -18,7 +18,13 @@
 
 ## 当前版本
 
-`v0.1.0`
+`v0.1.0` —— 已开源发布到 GitHub（<https://github.com/leungbzai-png/OBSOverlay>），GitHub Release 尚未创建。
+
+## v0.1.0 已实现功能（不要再当成待办）
+
+状态悬浮提示（不进画面）、OBS WebSocket 联动与配置化、系统托盘常驻 + 托盘图标、
+开机自启管理、OBS 自启管理、安全清理回归、依赖安装脚本、`config.example.json` 模板
+（真实 `config.json` 不提交）。详见 README / `docs/CHANGELOG.md`。未来增强方向见 `docs/ROADMAP.md`。
 
 ## 核心文件
 

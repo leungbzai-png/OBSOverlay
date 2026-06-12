@@ -33,9 +33,21 @@ v0.1.0
 
 ## 当前状态
 
-已完成项目化、去敏、文档化，准备首个开源提交。
+v0.1.0 已完成项目化、去敏、文档化，并已开源发布到 GitHub
+（<https://github.com/leungbzai-png/OBSOverlay>）。GitHub Release 尚未创建。
 
-## 已完成事项
+## v0.1.0 已实现功能
+
+- OBS 录屏状态悬浮提示（开始 / 停止 / 暂停 / 继续，`WDA_EXCLUDEFROMCAPTURE` 不进画面）。
+- OBS WebSocket 联动，断线自动重连。
+- 从 `config.json` 读取 OBS WebSocket 配置；`config.example.json` / `config.json` 分离，真实密码不提交。
+- 缺少 `config.json` 或密码仍为 `CHANGE_ME` 时弹窗提示。
+- 系统托盘常驻 + 托盘图标 + 测试提示 / 退出菜单。
+- 开机自启安装 / 取消脚本；OBS 开机自启安装 / 取消脚本。
+- 安全清理回归脚本；依赖安装脚本；普通用户双击 `.bat` 即可使用。
+- GitHub 开源项目结构 + 本地 source release。
+
+## 已完成的整理过程
 
 - 从旧目录复制并改造源码与脚本，整理为英文文件名。
 - 主程序改为从 `config.json` 读取配置；移除硬编码真实密码。

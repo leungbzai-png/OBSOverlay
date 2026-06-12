@@ -3,9 +3,10 @@
 > 轻量级 Windows OBS 录屏提示 / 状态悬浮小工具
 > A lightweight Windows overlay that shows OBS recording status while you record or stream.
 
-OBSOverlay 在屏幕右上角显示一个**录制不进画面**（capture-excluded）的小浮窗，
-当 OBS 开始 / 停止 / 暂停 / 继续录制时闪一下状态提示，并常驻系统托盘。
-它通过 **OBS WebSocket** 与 OBS Studio 通信。
+OBSOverlay 是一个轻量级 Windows OBS 录屏状态悬浮工具，支持 OBS WebSocket 联动、
+系统托盘常驻、开机自启、OBS 自启管理与安全配置文件。它在屏幕右上角显示一个
+**录制不进画面**（capture-excluded）的小浮窗，当 OBS 开始 / 停止 / 暂停 / 继续录制时
+闪一下状态提示，并常驻系统托盘。它通过 **OBS WebSocket** 与 OBS Studio 通信。
 
 ---
 
@@ -15,14 +16,18 @@ OBSOverlay 在屏幕右上角显示一个**录制不进画面**（capture-exclud
 - 直播 / 教学录制时，给自己一个明显的开始 / 暂停 / 停止状态反馈。
 - 希望开机自动启动 OBS 和提示工具，少点几步操作。
 
-## 功能列表
+## 功能列表（v0.1.0 已支持）
 
-- 右上角浮窗显示录制状态：开始 / 停止 / 暂停 / 继续。
-- 使用 `WDA_EXCLUDEFROMCAPTURE`，浮窗**不会被录进视频**。
-- 常驻系统托盘，可手动「测试提示」和「退出」。
-- OBS 断线自动重连。
-- 配置与代码分离：密码写在本地 `config.json`，不进仓库。
-- 提供开机自启 / 取消、OBS 开机自启 / 取消、安全清理等一键脚本。
+- **状态悬浮提示**：右上角浮窗显示录制状态（开始 / 停止 / 暂停 / 继续）。
+- **录制不进画面**：使用 `WDA_EXCLUDEFROMCAPTURE`，浮窗**不会被录进视频**。
+- **OBS WebSocket 联动**：监听 OBS 录制事件，断线自动重连。
+- **OBS WebSocket 配置化**：从本地 `config.json` 读取 host / port / password。
+- **系统托盘常驻**：带托盘图标，可手动「测试提示」和「退出」。
+- **开机自启管理**：一键安装 / 取消提示工具的开机自启。
+- **OBS 自启管理**：一键安装 / 取消 OBS Studio 的开机自启。
+- **安全清理回归**：一键脚本只清理本项目自身内容，逐步确认。
+- **`config.example.json` 模板**：配置与代码分离，**真实 `config.json` 不提交**。
+- **缺配置友好提示**：缺少 `config.json` 或密码仍为 `CHANGE_ME` 时弹窗提示，不静默失败。
 
 ## 快速开始
 

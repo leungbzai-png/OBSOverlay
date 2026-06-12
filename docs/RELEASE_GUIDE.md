@@ -54,7 +54,7 @@ git archive --format=zip -o "E:\Backup\Releases\OBSOverlay\v0.1.0\OBSOverlay-v0.
 
 ```powershell
 cd E:\Projects\Active\OBSOverlay
-Get-ChildItem -Recurse -File | Select-String -Pattern "password|passwd|token|secret|websocket|auth|credential|198964|Leung" | Where-Object { $_.Path -notlike "*\.git\*" }
+Get-ChildItem -Recurse -File | Select-String -Pattern "password|passwd|token|secret|websocket|auth|credential|OLD_PASSWORD_EXAMPLE|Leung" | Where-Object { $_.Path -notlike "*\.git\*" }
 ```
 
 可接受：`config.example.json` 里的 `CHANGE_ME`、文档中的占位符与配置说明。
